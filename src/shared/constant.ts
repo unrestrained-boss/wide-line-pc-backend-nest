@@ -1,0 +1,1 @@
+export const BACKEND_JWT_ALGORITHM = 'HS256';

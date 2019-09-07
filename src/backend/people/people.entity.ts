@@ -30,7 +30,7 @@ export class PeopleEntityWithoutPassword {
   @IsOptional()
   @MaxLength(128, { message: '头像最多 128 位' })
   @Column({ length: 128 })
-  avatar: string = '/avatar.png';
+  avatar: string;
 
   @ApiModelProperty()
   @IsMobilePhone('zh-CN', { message: '手机号码格式不正确' })
@@ -71,4 +71,19 @@ export class PeopleCreateDto extends PeopleEntityWithoutPassword {
   @MinLength(4, { message: '确认密码至少需要 4 位' })
   @MaxLength(32, { message: '确认密码最多需要 32 位' })
   confirmPassword: string;
+}
+
+export class PeopleLoginDto {
+  @ApiModelProperty()
+  @IsNotEmpty({ message: '用户名必须填写' })
+  @MinLength(4, { message: '用户名至少需要 4 位' })
+  @MaxLength(32, { message: '用户名最多需要 32 位' })
+  @Column({ length: 32 })
+  username: string;
+
+  @ApiModelProperty()
+  @IsNotEmpty({ message: '密码必须填写' })
+  @MinLength(4, { message: '密码至少需要 4 位' })
+  @MaxLength(32, { message: '密码最多需要 32 位' })
+  password: string;
 }

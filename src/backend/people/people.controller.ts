@@ -1,11 +1,11 @@
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PeopleService } from './people.service';
-import { PeopleCreateDto, PeopleEntity } from './people.entity';
+import { PeopleCreateDto, PeopleEntity, PeopleLoginDto } from './people.entity';
 import { ParamsException } from '../../shared/all-exception.exception';
 import * as bcrypt from 'bcryptjs';
 import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
-import { AuthGuard } from '../auth/auth.guard';
-import { AuthUser, AutUserEntity } from '../auth/auth.decorator';
+import { AuthGuard } from './auth.guard';
+import { AuthUser, AutUserEntity } from './auth.decorator';
 
 @ApiUseTags('用户管理')
 @ApiBearerAuth()
@@ -21,7 +21,6 @@ export class PeopleController {
 
   @Get('')
   async index(@AuthUser() user: AutUserEntity) {
-    console.log(user)
     return await this.service.repository.find();
   }
 

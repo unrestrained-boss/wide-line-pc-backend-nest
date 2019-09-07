@@ -1,9 +1,10 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { PeopleService } from '../people/people.service';
+import { PeopleService } from './people.service';
 import { ConfigService } from '../../config/config.service';
 import * as jwt from 'jsonwebtoken';
-import { TokenExpiredException, TokenFindCasingException, TokenFindException, TokenVerifyException } from '../../shared/all-exception.exception';
+import {  TokenFindCasingException, TokenFindException, TokenVerifyException } from '../../shared/all-exception.exception';
+import { BACKEND_JWT_ALGORITHM } from '../../shared/constant';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -30,13 +31,13 @@ export class AuthGuard implements CanActivate {
     const secretKey = this.configService.getString('BACKEND_TOKEN_SECRET_KEY');
 
     return new Promise(async (resolve, reject) => {
-      jwt.verify(token, secretKey, { algorithms: ['RS256'] }, (error, payload) => {
+      jwt.verify(token, secretKey, { algorithms: [BACKEND_JWT_ALGORITHM] }, (error, payload) => {
         if (error) {
           reject(new TokenVerifyException());
           return;
         }
         // 获得用户信息 并注入 req 对象
-        this.peopleService.findUserByToken(token).then(result => {
+        this.peopleService.repository.findOne(payload.id).then(result => {
           if (!result) {
             reject(new TokenFindException());
             return;

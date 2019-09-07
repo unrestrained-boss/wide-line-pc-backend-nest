@@ -3,6 +3,7 @@ import { PeopleController } from './people.controller';
 import { PeopleService } from './people.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PeopleEntity } from './people.entity';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -10,7 +11,7 @@ import { PeopleEntity } from './people.entity';
       [PeopleEntity],
     ),
   ],
-  controllers: [PeopleController],
+  controllers: [PeopleController, AuthController],
   providers: [PeopleService],
   exports: [PeopleService],
 })
