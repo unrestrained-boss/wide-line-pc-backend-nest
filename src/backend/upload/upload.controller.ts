@@ -7,20 +7,22 @@ import * as multer from 'multer';
 import * as mkdirp from 'mkdirp';
 import { ConfigService } from '../../config/config.service';
 import { parse } from 'path';
+import * as randomstring from 'randomstring';
+import * as fs from 'fs';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const date = new Date();
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
-    const dir = `./public/uploads/${year}/${month}`;
+    const dir = `./public/uploads/${year}/${month > 9 ? month : '0' + month.toString()}`;
     // TODO: 异常捕捉
     mkdirp.sync(dir);
     cb(null, dir);
   },
   filename: (req, file, cb) => {
     file = parse(file.originalname);
-    cb(null, Date.now().toString() + file.ext);
+    cb(null, randomstring.generate() + file.ext);
   },
 });
 
@@ -36,6 +38,7 @@ export class UploadController {
   @Post('image')
   @UseInterceptors(FileInterceptor('file', {
     storage,
+    limits: { fileSize: 50 * 1024 * 1024 },
     preservePath: true,
   }))
   upload(@UploadedFile() file) {
@@ -43,9 +46,11 @@ export class UploadController {
       throw new ParamsException('请上传文件');
     }
     if (!(file.mimetype.toLowerCase().startsWith('image/'))) {
+      this.deleteFile(file.path);
       throw new ParamsException('请上传有效的图片文件');
     }
     if (file.size / 1024 / 1024 > 50) {
+      this.deleteFile(file.path);
       throw new ParamsException('图片文件不能超过 50M');
     }
     const host = this.configService.getString('SERVER_HOST');
@@ -55,5 +60,11 @@ export class UploadController {
       path,
       url: `http://${host}:${port}/static/${path}`,
     };
+  }
+
+  private deleteFile(path: string) {
+    fs.unlink(path, () => {
+      //
+    });
   }
 }
