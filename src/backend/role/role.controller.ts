@@ -1,18 +1,22 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { RoleEntity } from './role.entity';
+import { CreateRoleDto, RoleEntity } from './role.entity';
 import { ParamsException } from '../../shared/all-exception.exception';
 import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { PERMISSION_CODES } from '../../shared/constant';
 import { Permission } from '../auth/permission.decorator';
+import { AuthService } from '../auth/auth.service';
 
 @ApiUseTags('角色管理')
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('backend/role')
 export class RoleController {
-  constructor(private service: RoleService) {
+  constructor(
+    private service: RoleService,
+    private authService: AuthService,
+  ) {
   }
 
   @Permission(PERMISSION_CODES.ROLE_LIST)
@@ -33,18 +37,18 @@ export class RoleController {
 
   @Permission(PERMISSION_CODES.ROLE_CREATE)
   @Post('')
-  async create(@Body() createDto: RoleEntity) {
-    return await this.service.repository.save(createDto);
+  async create(@Body() createDto: CreateRoleDto) {
+    return await this.authService.createRoleWithPermissions(createDto);
   }
 
   @Permission(PERMISSION_CODES.ROLE_UPDATE)
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateDto: RoleEntity) {
+  async update(@Param('id') id: string, @Body() updateDto: CreateRoleDto) {
     const record = await this.service.repository.findOne(id);
     if (!record) {
       throw new ParamsException('角色不存在');
     }
-    return await this.service.repository.save(updateDto);
+    return await this.authService.updateRoleWithPermissions(record, updateDto);
   }
 
   @Permission(PERMISSION_CODES.ROLE_DELETE)
@@ -54,7 +58,7 @@ export class RoleController {
     if (!record) {
       throw new ParamsException('角色不存在');
     }
-    await this.service.repository.remove(record);
+    await this.authService.deleteRoleWithPermissions(record.id);
     return null;
   }
 }

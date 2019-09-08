@@ -1,13 +1,13 @@
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PeopleService } from './people.service';
-import { PeopleCreateDto, PeopleEntity } from './people.entity';
+import { PeopleCreateDto, PeopleUpdateDto } from './people.entity';
 import { ParamsException } from '../../shared/all-exception.exception';
-import * as bcrypt from 'bcryptjs';
 import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser, AutUserEntity } from '../auth/auth.decorator';
 import { Permission } from '../auth/permission.decorator';
 import { PERMISSION_CODES } from '../../shared/constant';
+import { AuthService } from '../auth/auth.service';
 
 @ApiUseTags('用户管理')
 @ApiBearerAuth()
@@ -18,6 +18,7 @@ export class PeopleController {
 
   constructor(
     private service: PeopleService,
+    private authService: AuthService,
   ) {
   }
 
@@ -48,25 +49,17 @@ export class PeopleController {
     if (record) {
       throw new ParamsException('用户名已存在');
     }
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(createDto.password, salt);
-    const peopleEntity = new PeopleEntity();
-    Object.assign(peopleEntity, createDto);
-    peopleEntity.password = hash;
-    await this.service.repository.save(peopleEntity);
-    return peopleEntity;
+    return await this.authService.createPeopleWithRoles(createDto);
   }
 
   @Permission(PERMISSION_CODES.PEOPLE_UPDATE)
   @Put(':id')
-  async update(@Param('id') id: string, @Body() updateDto: PeopleEntity) {
+  async update(@Param('id') id: string, @Body() updateDto: PeopleUpdateDto) {
     const record = await this.service.repository.findOne(id);
     if (!record) {
       throw new ParamsException('用户不存在');
     }
-    Object.assign(record, updateDto);
-    await this.service.repository.save(record);
-    return record;
+    return await this.authService.updatePeopleWithRoles(record, updateDto);
   }
 
   @Permission(PERMISSION_CODES.PEOPLE_DELETE)
@@ -76,7 +69,7 @@ export class PeopleController {
     if (!record) {
       throw new ParamsException('用户不存在');
     }
-    await this.service.repository.remove(record);
+    await this.authService.deletePeopleWithRoles(id);
     return null;
   }
 }

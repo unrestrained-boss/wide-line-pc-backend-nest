@@ -1,26 +1,25 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { PeopleService } from '../people/people.service';
 import { ConfigService } from '../../config/config.service';
-import * as jwt from 'jsonwebtoken';
 import { PermissionNotFindException, TokenFindCasingException, TokenFindException, TokenVerifyException } from '../../shared/all-exception.exception';
 import { BACKEND_JWT_ALGORITHM } from '../../shared/constant';
 import { Reflector } from '@nestjs/core';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  peopleService: PeopleService;
   configService: ConfigService;
   reflector: Reflector;
+  authService: AuthService;
 
   constructor(
-    @Inject(PeopleService) peopleService: PeopleService,
     @Inject(ConfigService) configService: ConfigService,
     @Inject(Reflector) reflector: Reflector,
+    @Inject(AuthService) authService: AuthService,
   ) {
-    this.peopleService = peopleService;
     this.configService = configService;
     this.reflector = reflector;
+    this.authService = authService;
   }
 
   canActivate(
@@ -35,13 +34,12 @@ export class AuthGuard implements CanActivate {
     const secretKey = this.configService.getString('BACKEND_TOKEN_SECRET_KEY');
 
     return new Promise(async (resolve, reject) => {
-      jwt.verify(token, secretKey, { algorithms: [BACKEND_JWT_ALGORITHM] }, (error, payload) => {
-        if (error) {
+      this.authService.verifyToken(token).then((payload: any) => {
+        if (!payload) {
           reject(new TokenVerifyException());
-          return;
         }
         // 获得用户信息 并注入 req 对象
-        this.peopleService.repository.findOne(payload.id).then(async result => {
+        this.authService.repository3.findOne(payload.id).then(async result => {
           if (!result) {
             reject(new TokenFindException());
             return;
@@ -50,7 +48,7 @@ export class AuthGuard implements CanActivate {
           const permissions = this.reflector.get<string[]>('permission', context.getHandler());
           if (permissions) {
             // 从数据库获取拥有权限
-            let permissionCodes = await this.peopleService.findPermissions(result.id);
+            let permissionCodes = await this.authService.findPermissionCodesById(result.id);
             permissionCodes = permissionCodes.map(item => item.code);
             for (const per of permissions) {
               // 如果无权限

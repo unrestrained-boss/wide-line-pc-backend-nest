@@ -19,3 +19,7 @@ export const PERMISSION_CODES = {
   ROLE_UPDATE: 'ROLE_UPDATE',
   ROLE_DELETE: 'ROLE_DELETE',
 };
+export enum ENTITY_STATUS_ENUM {
+  disable = 0,
+  enable = 1,
+}
