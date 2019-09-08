@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { PeopleLoginDto } from './people.entity';
+import { PeopleLoginDto } from '../people/people.entity';
 import { ParamsException } from '../../shared/all-exception.exception';
-import { PeopleService } from './people.service';
+import { PeopleService } from '../people/people.service';
 import * as bcrypt from 'bcryptjs';
 import { ApiUseTags } from '@nestjs/swagger';
 

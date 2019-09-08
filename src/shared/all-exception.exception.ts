@@ -28,3 +28,8 @@ export class TokenFindCasingException extends HttpException {
     super('Token 查找异常, 请稍后再试', HttpStatus.OK);
   }
 }
+export class PermissionNotFindException extends HttpException {
+  constructor() {
+    super('无权操作', HttpStatus.OK);
+  }
+}

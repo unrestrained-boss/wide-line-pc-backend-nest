@@ -10,4 +10,5 @@ export class PermissionService {
     public readonly repository: Repository<PermissionEntity>,
   ) {
   }
+
 }

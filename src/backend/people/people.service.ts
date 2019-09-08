@@ -34,4 +34,10 @@ export class PeopleService {
 
     });
   }
+
+  async findPermissions(id: string) {
+    return await this.repository.query(`SELECT \`code\` FROM \`permission\` WHERE \`id\`
+    IN (SELECT \`permission_id\` FROM \`merge_role_permission\` WHERE \`role_id\`
+    IN (SELECT \`role_id\` FROM \`merge_people_role\` WHERE \`people_id\` = ?));`, [id]);
+  }
 }
