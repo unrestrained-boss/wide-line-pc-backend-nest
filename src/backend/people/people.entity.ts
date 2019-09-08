@@ -1,10 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, AfterLoad } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsArray, IsEmail, IsEnum, IsMobilePhone, IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { ENTITY_STATUS_ENUM } from '../../shared/constant';
+import { ConfigService } from '../../config/config.service';
 
+// 此处无法注入 configService
 export class PeopleEntityWithoutPassword {
+  avatarUrl: string;
+  @AfterLoad()
+  setComputed() {
+    this.avatarUrl = ConfigService.urlPrefix + this.avatar;
+  }
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -38,7 +45,7 @@ export class PeopleEntityWithoutPassword {
   @Column({ length: 32 })
   email: string;
 
-  @ApiModelProperty({enum: [ENTITY_STATUS_ENUM.disable, ENTITY_STATUS_ENUM.enable]})
+  @ApiModelProperty({ enum: [ENTITY_STATUS_ENUM.disable, ENTITY_STATUS_ENUM.enable] })
   @IsEnum(ENTITY_STATUS_ENUM, { message: '状态格式不正确' })
   @Column({ enum: ENTITY_STATUS_ENUM })
   status: ENTITY_STATUS_ENUM;
@@ -54,11 +61,13 @@ export class PeopleEntity extends PeopleEntityWithoutPassword {
   @Column({ length: 64 })
   password: string;
 }
+
 export class PeopleUpdateDto extends PeopleEntityWithoutPassword {
   @ApiModelProperty()
   @IsArray({ message: '角色必须填写' })
   roles: string[];
 }
+
 export class PeopleCreateDto extends PeopleEntityWithoutPassword {
   @ApiModelProperty()
   @MaxLength(32, { message: '密码最多需要 32 位' })

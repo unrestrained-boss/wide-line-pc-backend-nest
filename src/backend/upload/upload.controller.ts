@@ -32,9 +32,6 @@ const storage = multer.diskStorage({
 @Controller('backend/upload')
 export class UploadController {
 
-  constructor(private configService: ConfigService) {
-  }
-
   @Post('image')
   @UseInterceptors(FileInterceptor('file', {
     storage,
@@ -46,23 +43,22 @@ export class UploadController {
       throw new ParamsException('请上传文件');
     }
     if (!(file.mimetype.toLowerCase().startsWith('image/'))) {
-      this.deleteFile(file.path);
+      UploadController.deleteFile(file.path);
       throw new ParamsException('请上传有效的图片文件');
     }
     if (file.size / 1024 / 1024 > 50) {
-      this.deleteFile(file.path);
+      UploadController.deleteFile(file.path);
       throw new ParamsException('图片文件不能超过 50M');
     }
-    const host = this.configService.getString('SERVER_HOST');
-    const port = this.configService.getNumber('SERVER_PORT');
+    const urlPrefix = ConfigService.urlPrefix;
     const path = file.path.replace(/^\.?\/?public\//, '');
     return {
       path,
-      url: `http://${host}:${port}/static/${path}`,
+      url: urlPrefix + path,
     };
   }
 
-  private deleteFile(path: string) {
+  private static deleteFile(path: string) {
     fs.unlink(path, () => {
       //
     });

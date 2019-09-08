@@ -55,6 +55,9 @@ export class AuthService {
     const hash = bcrypt.hashSync(createDto.password, salt);
     const peopleEntity = new PeopleEntity();
     Object.assign(peopleEntity, createDto);
+    if (!peopleEntity.avatar) {
+      peopleEntity.avatar = this.configService.getString('BACKEND_DEFAULT_AVATAR');
+    }
     peopleEntity.password = hash;
     // 插入用户表
     await this.repository3.manager.transaction(async entityManager => {
