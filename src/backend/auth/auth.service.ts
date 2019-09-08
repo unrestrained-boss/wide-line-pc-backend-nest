@@ -40,7 +40,7 @@ export class AuthService {
 
   async verifyToken(token: string) {
     const secretKey = this.configService.getString('BACKEND_TOKEN_SECRET_KEY');
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       jwt.verify(token, secretKey, { algorithms: [BACKEND_JWT_ALGORITHM] }, (error, payload) => {
         if (error) {
           resolve(null);

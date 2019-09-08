@@ -29,6 +29,7 @@
     "class-validator": "latest",
     "dotenv": "^8.1.0",
     "jsonwebtoken": "^8.5.1",
+    "mkdirp": "^0.5.1",
     "mysql2": "^1.7.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",

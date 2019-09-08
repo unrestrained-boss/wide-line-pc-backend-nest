@@ -4,10 +4,13 @@ import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { AllExceptionFilter } from './shared/all-exception.filter';
 import { ParamsException } from './shared/all-exception.exception';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as express from 'express';
+import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { httpAdapter } = app.get(HttpAdapterHost);
+  app.use('/static', express.static(join(__dirname, '../', 'public')));
   app.useGlobalFilters(new AllExceptionFilter(httpAdapter));
   app.useGlobalPipes(new ValidationPipe({
     exceptionFactory: (errors: ValidationError[]) => {
