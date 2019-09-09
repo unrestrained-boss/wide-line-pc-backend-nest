@@ -11,6 +11,7 @@ interface PermissionType {
 const PEOPLE_MODULE = '人员模块';
 const ROLE_MODULE = '角色模块';
 const PERMISSION_MODULE = '权限模块';
+const UPLOAD_MODULE = '上传模块';
 export const PERMISSION_TYPES: PermissionType = {
   // 人员模块
   PEOPLE_LIST: { code: 'PEOPLE_LIST', name: PEOPLE_MODULE, description: '查看人员列表' },
@@ -30,6 +31,8 @@ export const PERMISSION_TYPES: PermissionType = {
   ROLE_CREATE: { code: 'ROLE_CREATE', name: ROLE_MODULE, description: '创建角色' },
   ROLE_UPDATE: { code: 'ROLE_UPDATE', name: ROLE_MODULE, description: '更新角色信息' },
   ROLE_DELETE: { code: 'ROLE_DELETE', name: ROLE_MODULE, description: '删除角色' },
+  // 上传模块
+  UPLOAD_IMAGE: { code: 'UPLOAD_IMAGE', name: UPLOAD_MODULE, description: '上传图片文件' },
 };
 
 export enum ENTITY_STATUS_ENUM {

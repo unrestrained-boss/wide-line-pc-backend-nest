@@ -9,6 +9,8 @@ import { ConfigService } from '../../config/config.service';
 import { parse } from 'path';
 import * as randomstring from 'randomstring';
 import * as fs from 'fs';
+import { Permission } from '../auth/permission.decorator';
+import { PERMISSION_TYPES } from '../../shared/constant';
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -33,6 +35,7 @@ const storage = multer.diskStorage({
 @Controller('backend/upload')
 export class UploadController {
 
+  @Permission(PERMISSION_TYPES.UPLOAD_IMAGE.code)
   @Post('image')
   @UseInterceptors(FileInterceptor('file', {
     storage,

@@ -31,6 +31,7 @@ export class AuthService {
   }
 
   async findPermissionCodesById(id: string) {
+    // TODO: IN PERMISSION CODES
     return await this.repository3.query(`SELECT \`code\` FROM \`permission\` WHERE \`id\`
     IN (
     SELECT \`permission_id\` FROM \`merge_role_permission\` WHERE \`role_id\`
