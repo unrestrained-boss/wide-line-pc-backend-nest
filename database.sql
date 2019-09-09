@@ -95,6 +95,7 @@ CREATE TABLE `product`
     `title`      VARCHAR(64)  NOT NULL COMMENT '产品名称',
     `spec`       VARCHAR(32)  NOT NULL COMMENT '规范:如尺码, 内存',
     `lowest_price`     DECIMAL(20, 2)  NOT NULL COMMENT '最低价格',
+    `highest_price`    DECIMAL(20, 2)  NOT NULL COMMENT '最高价格',
     `thumbs`     TEXT       NOT NULL COMMENT '轮播图',
     `details`    TEXT       NOT NULL COMMENT '详情',
     `sales`      INT        DEFAULT 0 COMMENT '销量',

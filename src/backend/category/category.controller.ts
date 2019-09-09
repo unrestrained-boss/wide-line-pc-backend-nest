@@ -13,7 +13,6 @@ import { defaultTransformLabelOption, transformLabel } from '../../shared/util';
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('backend/category')
-
 export class CategoryController {
   constructor(private service: CategoryService) {
   }

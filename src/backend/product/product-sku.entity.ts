@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { IsEnum, IsUUID, IsNotEmpty, IsOptional, MaxLength, Min, IsNumber, IsDecimal } from 'class-validator';
-import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty, MaxLength, Min, IsNumber, IsDecimal } from 'class-validator';
+import { ApiModelProperty } from '@nestjs/swagger';
 import { ENTITY_STATUS_ENUM } from '../../shared/constant';
 
 @Entity({ name: 'product_sku' })
@@ -9,8 +9,9 @@ export class ProductSkuEntity {
   id: string;
 
   @ApiModelProperty()
-  @IsDecimal({}, { message: '产品价格格式错误' })
+  @IsNumber({ allowNaN: false, allowInfinity: false }, { message: '产品价格格式错误' })
   @IsNotEmpty({ message: '请输入产品价格' })
+  @Min(0.01, { message: '产品价格不能低于 0.01 元' })
   @Column()
   price: number;
 
@@ -25,7 +26,7 @@ export class ProductSkuEntity {
   @Column()
   sock: number;
 
-  @Column()
+  @Column({name: 'product_id'})
   productId: string;
 
   @ApiModelProperty({ enum: [ENTITY_STATUS_ENUM.disable, ENTITY_STATUS_ENUM.enable] })

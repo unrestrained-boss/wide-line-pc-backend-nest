@@ -1,7 +1,44 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { IsEnum, IsUUID, IsNotEmpty, IsOptional, MaxLength, Min, IsNumber } from 'class-validator';
+import {
+  IsEnum,
+  IsUUID,
+  IsNotEmpty,
+  MaxLength,
+  IsArray,
+  ValidatorConstraint,
+  ValidationArguments,
+  ValidatorConstraintInterface, Validate, validateSync,
+} from 'class-validator';
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { ENTITY_STATUS_ENUM } from '../../shared/constant';
+import { ProductSkuEntity } from './product-sku.entity';
+
+@ValidatorConstraint({ name: 'customText', async: false })
+class IsSKUS implements ValidatorConstraintInterface {
+  defaultMessage(validationArguments?: ValidationArguments): string {
+    return '($value) 不是 SKU';
+  }
+
+  validate(value: any, validationArguments?: ValidationArguments): Promise<boolean> | boolean {
+    if (!Array.isArray(value)) {
+      return false;
+    }
+    if (value.length === 0) {
+      return false;
+    }
+    for (const item of value) {
+      const p: ProductSkuEntity = new ProductSkuEntity();
+      p.price = item.price;
+      p.spec = item.spec;
+      p.sock = item.sock;
+      p.status = item.status;
+      if (validateSync(p).length > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
 
 @Entity({ name: 'product' })
 export class ProductEntity {
@@ -15,19 +52,25 @@ export class ProductEntity {
   title: string;
 
   @Column()
+  @IsNotEmpty({ message: '请输入规格名称' })
+  @Column({ length: 32 })
   spec: string;
 
   @Column()
   sales: number;
 
   @Column({ name: 'lowest_price' })
-  lowestPrice: string;
+  lowestPrice: number;
+
+  @Column({ name: 'highest_price' })
+  highestPrice: number;
 
   @ApiModelPropertyOptional()
   @IsNotEmpty({ message: '请上传轮播图' })
   @Column()
   thumbs: string;
 
+  // TODO: IsString 注解
   @ApiModelPropertyOptional()
   @IsNotEmpty({ message: '请输入产品详情' })
   @Column()
@@ -54,4 +97,11 @@ export class ProductEntity {
   createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+}
+
+export class ProductCreateDto extends ProductEntity {
+  @ApiModelPropertyOptional()
+  @IsArray({ message: 'sku 格式不正确' })
+  @Validate(IsSKUS, { message: 'sku 格式不正确' })
+  skus: ProductSkuEntity[];
 }

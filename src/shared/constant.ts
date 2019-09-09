@@ -14,6 +14,7 @@ const PERMISSION_MODULE = '权限模块';
 const UPLOAD_MODULE = '上传模块';
 const BRAND_MODULE = '品牌模块';
 const CATEGORY_MODULE = '分类模块';
+const PRODUCT_MODULE = '产品模块';
 
 export const PERMISSION_TYPES: PermissionType = {
   // 人员模块
@@ -37,24 +38,30 @@ export const PERMISSION_TYPES: PermissionType = {
   // 上传模块
   UPLOAD_IMAGE: { code: 'UPLOAD_IMAGE', name: UPLOAD_MODULE, description: '上传图片文件' },
   // 品牌模块
-  BRAND_LIST: {code: 'BRAND_LIST', name: BRAND_MODULE, description: '查看品牌列表'},
-  BRAND_INFO: {code: 'BRAND_INFO', name: BRAND_MODULE, description: '查看品牌详情'},
-  BRAND_CREATE: {code: 'BRAND_CREATE', name: BRAND_MODULE, description: '创建品牌'},
-  BRAND_UPDATE: {code: 'BRAND_UPDATE', name: BRAND_MODULE, description: '更新品牌信息'},
-  BRAND_DELETE: {code: 'BRAND_DELETE', name: BRAND_MODULE, description: '删除品牌'},
+  BRAND_LIST: { code: 'BRAND_LIST', name: BRAND_MODULE, description: '查看品牌列表' },
+  BRAND_INFO: { code: 'BRAND_INFO', name: BRAND_MODULE, description: '查看品牌详情' },
+  BRAND_CREATE: { code: 'BRAND_CREATE', name: BRAND_MODULE, description: '创建品牌' },
+  BRAND_UPDATE: { code: 'BRAND_UPDATE', name: BRAND_MODULE, description: '更新品牌信息' },
+  BRAND_DELETE: { code: 'BRAND_DELETE', name: BRAND_MODULE, description: '删除品牌' },
   // 分类模块
-  CATEGORY_LIST: {code: 'CATEGORY_LIST', name: CATEGORY_MODULE, description: '查看分类列表'},
-  CATEGORY_INFO: {code: 'CATEGORY_INFO', name: CATEGORY_MODULE, description: '查看分类详情'},
-  CATEGORY_CREATE: {code: 'CATEGORY_CREATE', name: CATEGORY_MODULE, description: '创建分类'},
-  CATEGORY_UPDATE: {code: 'CATEGORY_UPDATE', name: CATEGORY_MODULE, description: '更新分类信息'},
-  CATEGORY_DELETE: {code: 'CATEGORY_DELETE', name: CATEGORY_MODULE, description: '删除分类'},
-
+  CATEGORY_LIST: { code: 'CATEGORY_LIST', name: CATEGORY_MODULE, description: '查看分类列表' },
+  CATEGORY_INFO: { code: 'CATEGORY_INFO', name: CATEGORY_MODULE, description: '查看分类详情' },
+  CATEGORY_CREATE: { code: 'CATEGORY_CREATE', name: CATEGORY_MODULE, description: '创建分类' },
+  CATEGORY_UPDATE: { code: 'CATEGORY_UPDATE', name: CATEGORY_MODULE, description: '更新分类信息' },
+  CATEGORY_DELETE: { code: 'CATEGORY_DELETE', name: CATEGORY_MODULE, description: '删除分类' },
+  // 产品管理
+  PRODUCT_LIST: { code: 'PRODUCT_LIST', name: PRODUCT_MODULE, description: '查看产品列表' },
+  PRODUCT_INFO: { code: 'PRODUCT_INFO', name: PRODUCT_MODULE, description: '查看产品详情' },
+  PRODUCT_CREATE: { code: 'PRODUCT_CREATE', name: PRODUCT_MODULE, description: '创建产品' },
+  PRODUCT_UPDATE: { code: 'PRODUCT_UPDATE', name: PRODUCT_MODULE, description: '更新产品信息' },
+  PRODUCT_DELETE: { code: 'PRODUCT_DELETE', name: PRODUCT_MODULE, description: '删除产品' },
 };
 
 export enum ENTITY_STATUS_ENUM {
   disable = 0,
   enable = 1,
 }
+
 export enum PEOPLE_ROOT_ENUM {
   no = 0,
   yes = 1,
