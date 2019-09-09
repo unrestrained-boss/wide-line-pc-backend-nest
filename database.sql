@@ -12,6 +12,7 @@ CREATE TABLE `people`
     `phone`      VARCHAR(32)        NOT NULL COMMENT '手机号码',
     `email`      VARCHAR(64)        NOT NULL COMMENT '电子邮箱',
     `token`      VARCHAR(255)        DEFAULT NULL COMMENT 'TOKEN',
+    `root`       TINYINT  DEFAULT 0 COMMENT '是否是超级管理员, 无视权限: 1 是 0 否',
     `status`     TINYINT  DEFAULT 1 COMMENT '状态: 1 可用 0 禁用',
     `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { MergePeopleRoleEntity } from './merge-people-role.entity';
 import { MergeRolePermissionEntity } from './merge-role-permission.entity';
 import { PeopleCreateDto, PeopleEntity, PeopleUpdateDto } from '../people/people.entity';
-import { BACKEND_JWT_ALGORITHM, ENTITY_STATUS_ENUM } from '../../shared/constant';
+import { BACKEND_JWT_ALGORITHM, ENTITY_STATUS_ENUM, PEOPLE_ROOT_ENUM } from '../../shared/constant';
 import * as jwt from 'jsonwebtoken';
 import { ConfigService } from '../../config/config.service';
 import * as bcrypt from 'bcryptjs';
@@ -58,6 +58,8 @@ export class AuthService {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(createDto.password, salt);
     const peopleEntity = new PeopleEntity();
+    // 强制设为 非 ROOT 用户
+    peopleEntity.root = PEOPLE_ROOT_ENUM.no;
     Object.assign(peopleEntity, createDto);
     if (!peopleEntity.avatar) {
       peopleEntity.avatar = this.configService.getString('BACKEND_DEFAULT_AVATAR');
@@ -80,6 +82,8 @@ export class AuthService {
 
   async updatePeopleWithRoles(peopleEntity: PeopleEntity, updateDto: PeopleUpdateDto) {
     Object.assign(peopleEntity, updateDto);
+    // 强制设为 非 ROOT 用户
+    peopleEntity.root = PEOPLE_ROOT_ENUM.no;
     // TODO: try / catch
     await this.repository3.manager.transaction(async entityManager => {
       await entityManager.save<PeopleEntity>(peopleEntity);

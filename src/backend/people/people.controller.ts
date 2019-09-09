@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PeopleService } from './people.service';
 import { PeopleCreateDto, PeopleUpdateDto } from './people.entity';
 import { ParamsException } from '../../shared/all-exception.exception';
@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser, AutUserEntity } from '../auth/auth.decorator';
 import { Permission } from '../auth/permission.decorator';
-import { PERMISSION_TYPES } from '../../shared/constant';
+import { PEOPLE_ROOT_ENUM, PERMISSION_TYPES } from '../../shared/constant';
 import { AuthService } from '../auth/auth.service';
 
 @ApiUseTags('用户管理')
@@ -59,6 +59,9 @@ export class PeopleController {
     if (!record) {
       throw new ParamsException('用户不存在');
     }
+    if (record.root === PEOPLE_ROOT_ENUM.yes) {
+      throw new ParamsException('无法修改 root 用户');
+    }
     return await this.authService.updatePeopleWithRoles(record, updateDto);
   }
 
@@ -68,6 +71,9 @@ export class PeopleController {
     const record = await this.service.repository.findOne(id);
     if (!record) {
       throw new ParamsException('用户不存在');
+    }
+    if (record.root === PEOPLE_ROOT_ENUM.yes) {
+      throw new ParamsException('无法删除 root 用户');
     }
     await this.authService.deletePeopleWithRoles(id);
     return null;

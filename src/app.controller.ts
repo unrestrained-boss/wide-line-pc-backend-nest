@@ -45,19 +45,19 @@ export class AppController {
         await e.query('DELETE FROM `merge_role_permission`');
         // 插入人员数据
         await e.query(
-          'INSERT INTO `people` (`id`, `username`, `password`, `realName`, `avatar`, `phone`, `email`, `status`) VALUES(?, ?, ?, ?, ?, ?, ?, ?);',
+          'INSERT INTO `people` (`id`, `username`, `password`, `realName`, `avatar`, `phone`, `email`, `root`) VALUES(?, ?, ?, ?, ?, ?, ?, ?);',
           [adminUUID, admin.username, admin.password, admin.realName, admin.avatar, admin.phone, admin.email, 1],
         );
         // 插入角色数据
-        await e.query(
-          'INSERT INTO `role` (`id`, `name`, `description`, `status`) VALUES(?, ?, ?, ?);',
-          [roleUUID, '超级管理员', '至高无上', 1],
-        );
+        // await e.query(
+        //   'INSERT INTO `role` (`id`, `name`, `description`, `status`) VALUES(?, ?, ?, ?);',
+        //   [roleUUID, '超级管理员', '至高无上', 1],
+        // );
         // 插入人员角色中间表数据
-        await e.query(
-          'INSERT INTO `merge_people_role` (`id`, `people_id`, `role_id`) VALUES(?, ?, ?);',
-          [uuid(), adminUUID, roleUUID],
-        );
+        // await e.query(
+        //   'INSERT INTO `merge_people_role` (`id`, `people_id`, `role_id`) VALUES(?, ?, ?);',
+        //   [uuid(), adminUUID, roleUUID],
+        // );
 
         for (const permission of permissions) {
           // 插入权限数据
@@ -66,10 +66,10 @@ export class AppController {
             [permission.id, permission.code, permission.name, permission.description],
           );
           // 插入角色权限中间数据
-          await e.query(
-            'INSERT INTO `merge_role_permission` (`id`, `role_id`, `permission_id`) VALUES (?, ?, ?);',
-            [uuid(), roleUUID, permission.id],
-          );
+          // await e.query(
+          //   'INSERT INTO `merge_role_permission` (`id`, `role_id`, `permission_id`) VALUES (?, ?, ?);',
+          //   [uuid(), roleUUID, permission.id],
+          // );
         }
 
       });

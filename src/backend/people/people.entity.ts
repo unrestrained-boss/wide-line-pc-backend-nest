@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { Exclude } from 'class-transformer';
 import { IsArray, IsEmail, IsEnum, IsMobilePhone, IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
-import { ENTITY_STATUS_ENUM } from '../../shared/constant';
+import { ENTITY_STATUS_ENUM, PEOPLE_ROOT_ENUM } from '../../shared/constant';
 import { ConfigService } from '../../config/config.service';
 
 // 此处无法注入 configService
@@ -66,6 +66,9 @@ export class PeopleEntity extends PeopleEntityWithoutPassword {
   @Exclude()
   @Column({ length: 32 })
   token: string;
+
+  @Column({ enum: PEOPLE_ROOT_ENUM })
+  root: PEOPLE_ROOT_ENUM;
 }
 
 export class PeopleUpdateDto extends PeopleEntityWithoutPassword {

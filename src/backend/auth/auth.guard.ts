@@ -8,7 +8,7 @@ import {
   TokenFindCasingException,
   TokenVerifyException,
 } from '../../shared/all-exception.exception';
-import { ENTITY_STATUS_ENUM } from '../../shared/constant';
+import { ENTITY_STATUS_ENUM, PEOPLE_ROOT_ENUM } from '../../shared/constant';
 import { Reflector } from '@nestjs/core';
 import { AuthService } from './auth.service';
 
@@ -59,20 +59,24 @@ export class AuthGuard implements CanActivate {
             reject(new TokenExpiredException());
             return;
           }
-          // 取得当前路由所需权限
-          const permissions = this.reflector.get<string[]>('permission', context.getHandler());
-          if (permissions) {
-            // 从数据库获取拥有权限
-            let permissionCodes = await this.authService.findPermissionCodesById(result.id);
-            permissionCodes = permissionCodes.map(item => item.code);
-            for (const per of permissions) {
-              // 如果无权限
-              if (!(permissionCodes as string[]).includes(per)) {
-                reject(new PermissionNotFindException());
-                return;
+          // ROOT 用户直接拥有权限
+          if (result.root === PEOPLE_ROOT_ENUM.no) {
+            // 取得当前路由所需权限
+            const permissions = this.reflector.get<string[]>('permission', context.getHandler());
+            if (permissions) {
+              // 从数据库获取拥有权限
+              let permissionCodes = await this.authService.findPermissionCodesById(result.id);
+              permissionCodes = permissionCodes.map(item => item.code);
+              for (const per of permissions) {
+                // 如果无权限
+                if (!(permissionCodes as string[]).includes(per)) {
+                  reject(new PermissionNotFindException());
+                  return;
+                }
               }
             }
           }
+
           req.user = result;
           resolve(true);
         })

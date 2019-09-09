@@ -36,3 +36,7 @@ export enum ENTITY_STATUS_ENUM {
   disable = 0,
   enable = 1,
 }
+export enum PEOPLE_ROOT_ENUM {
+  no = 0,
+  yes = 1,
+}
