@@ -5,7 +5,9 @@ import * as uuid from 'uuid';
 import * as bcrypt from 'bcryptjs';
 import { PERMISSION_TYPES } from './shared/constant';
 import { ParamsException } from './shared/all-exception.exception';
+import { ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('系统初始化, 添加 ROOT 用户')
 @Controller('setup')
 export class AppController {
   constructor(

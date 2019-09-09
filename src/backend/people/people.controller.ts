@@ -4,7 +4,6 @@ import { PeopleCreateDto, PeopleEntity, PeopleUpdateDto } from './people.entity'
 import { ParamsException } from '../../shared/all-exception.exception';
 import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
-import { AuthUser, AutUserEntity } from '../auth/auth.decorator';
 import { Permission } from '../auth/permission.decorator';
 import { PEOPLE_ROOT_ENUM, PERMISSION_TYPES } from '../../shared/constant';
 import { AuthService } from '../auth/auth.service';
