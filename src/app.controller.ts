@@ -4,6 +4,7 @@ import { ConfigService } from './config/config.service';
 import * as uuid from 'uuid';
 import * as bcrypt from 'bcryptjs';
 import { PERMISSION_TYPES } from './shared/constant';
+import { ParamsException } from './shared/all-exception.exception';
 
 @Controller('setup')
 export class AppController {
@@ -38,6 +39,10 @@ export class AppController {
     });
     try {
       await this.connection.transaction(async e => {
+        const result = await e.query('SELECT `id` FROM `people` WHERE `root` = ?', [1]);
+        if (result.length > 0) {
+          throw new ParamsException('root 用户已存在');
+        }
         await e.query('DELETE FROM `people`');
         await e.query('DELETE FROM `role`');
         await e.query('DELETE FROM `permission`');
@@ -73,11 +78,9 @@ export class AppController {
         }
 
       });
-      return {
-        ok: true,
-      };
+      return 'ok';
     } catch (e) {
-      return null;
+      return e.message;
     }
   }
 }
