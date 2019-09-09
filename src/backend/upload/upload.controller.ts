@@ -15,7 +15,8 @@ const storage = multer.diskStorage({
     const date = new Date();
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
-    const dir = `./public/uploads/${year}/${month > 9 ? month : '0' + month.toString()}`;
+    const week = Math.ceil(date.getDate() / 7);
+    const dir = `./public/uploads/${year}/${month > 9 ? month : '0' + month.toString()}/${week}`;
     // TODO: 异常捕捉
     mkdirp.sync(dir);
     cb(null, dir);
