@@ -8,10 +8,12 @@ import { ConfigService } from '../../config/config.service';
 // 此处无法注入 configService
 export class PeopleEntityWithoutPassword {
   avatarUrl: string;
+
   @AfterLoad()
   setComputed() {
     this.avatarUrl = ConfigService.urlPrefix + this.avatar;
   }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -60,6 +62,10 @@ export class PeopleEntity extends PeopleEntityWithoutPassword {
   @Exclude()
   @Column({ length: 64 })
   password: string;
+
+  @Exclude()
+  @Column({ length: 32 })
+  token: string;
 }
 
 export class PeopleUpdateDto extends PeopleEntityWithoutPassword {

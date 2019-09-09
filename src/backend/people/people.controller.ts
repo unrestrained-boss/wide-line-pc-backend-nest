@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
 import { AuthUser, AutUserEntity } from '../auth/auth.decorator';
 import { Permission } from '../auth/permission.decorator';
-import { PERMISSION_CODES } from '../../shared/constant';
+import { PERMISSION_TYPES } from '../../shared/constant';
 import { AuthService } from '../auth/auth.service';
 
 @ApiUseTags('用户管理')
@@ -22,13 +22,13 @@ export class PeopleController {
   ) {
   }
 
-  @Permission(PERMISSION_CODES.PEOPLE_LIST)
+  @Permission(PERMISSION_TYPES.PEOPLE_LIST.code)
   @Get('')
   async index(@AuthUser() user: AutUserEntity) {
     return await this.service.repository.find();
   }
 
-  @Permission(PERMISSION_CODES.PEOPLE_INFO)
+  @Permission(PERMISSION_TYPES.PEOPLE_INFO.code)
   @Get(':id')
   async detail(@Param('id') id: string) {
     const record = await this.service.repository.findOne(id);
@@ -38,7 +38,7 @@ export class PeopleController {
     return record;
   }
 
-  @Permission(PERMISSION_CODES.PEOPLE_CREATE)
+  @Permission(PERMISSION_TYPES.PEOPLE_CREATE.code)
   @Post('')
   async create(@Body() createDto: PeopleCreateDto) {
     if (createDto.password !== createDto.confirmPassword) {
@@ -52,7 +52,7 @@ export class PeopleController {
     return await this.authService.createPeopleWithRoles(createDto);
   }
 
-  @Permission(PERMISSION_CODES.PEOPLE_UPDATE)
+  @Permission(PERMISSION_TYPES.PEOPLE_UPDATE.code)
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateDto: PeopleUpdateDto) {
     const record = await this.service.repository.findOne(id);
@@ -62,7 +62,7 @@ export class PeopleController {
     return await this.authService.updatePeopleWithRoles(record, updateDto);
   }
 
-  @Permission(PERMISSION_CODES.PEOPLE_DELETE)
+  @Permission(PERMISSION_TYPES.PEOPLE_DELETE.code)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const record = await this.service.repository.findOne(id);

@@ -5,7 +5,7 @@ import { ParamsException } from '../../shared/all-exception.exception';
 import { PermissionEntity } from './permission.entity';
 import { Permission } from '../auth/permission.decorator';
 import { AuthGuard } from '../auth/auth.guard';
-import { PERMISSION_CODES } from '../../shared/constant';
+import { PERMISSION_TYPES } from '../../shared/constant';
 
 @ApiUseTags('权限管理')
 @ApiBearerAuth()
@@ -15,13 +15,13 @@ export class PermissionController {
 
   constructor(private service: PermissionService) {
   }
-  @Permission(PERMISSION_CODES.PERMISSION_LIST)
+  @Permission(PERMISSION_TYPES.PERMISSION_LIST.code)
   @Get('')
   async index() {
     return await this.service.repository.find();
   }
 
-  @Permission(PERMISSION_CODES.PERMISSION_INFO)
+  @Permission(PERMISSION_TYPES.PERMISSION_INFO.code)
   @Get(':id')
   async detail(@Param('id') id: string) {
     const record = await this.service.repository.findOne(id);
@@ -31,13 +31,13 @@ export class PermissionController {
     return record;
   }
 
-  @Permission(PERMISSION_CODES.PERMISSION_CREATE)
+  @Permission(PERMISSION_TYPES.PERMISSION_CREATE.code)
   @Post('')
   async create(@Body() createDto: PermissionEntity) {
     return await this.service.repository.save(createDto);
   }
 
-  @Permission(PERMISSION_CODES.PERMISSION_UPDATE)
+  @Permission(PERMISSION_TYPES.PERMISSION_UPDATE.code)
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateDto: PermissionEntity) {
     const record = await this.service.repository.findOne(id);
@@ -47,7 +47,7 @@ export class PermissionController {
     return await this.service.repository.save(updateDto);
   }
 
-  @Permission(PERMISSION_CODES.PERMISSION_DELETE)
+  @Permission(PERMISSION_TYPES.PERMISSION_DELETE.code)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const record = await this.service.repository.findOne(id);

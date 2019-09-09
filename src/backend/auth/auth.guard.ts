@@ -1,8 +1,14 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../../config/config.service';
-import { PermissionNotFindException, TokenFindCasingException, TokenFindException, TokenVerifyException } from '../../shared/all-exception.exception';
-import { BACKEND_JWT_ALGORITHM } from '../../shared/constant';
+import {
+  ParamsException,
+  PermissionNotFindException,
+  TokenExpiredException,
+  TokenFindCasingException,
+  TokenVerifyException,
+} from '../../shared/all-exception.exception';
+import { ENTITY_STATUS_ENUM } from '../../shared/constant';
 import { Reflector } from '@nestjs/core';
 import { AuthService } from './auth.service';
 
@@ -31,17 +37,26 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException('未携带 Token, 请检查后再试');
     }
-    const secretKey = this.configService.getString('BACKEND_TOKEN_SECRET_KEY');
+    // const secretKey = this.configService.getString('BACKEND_TOKEN_SECRET_KEY');
 
     return new Promise(async (resolve, reject) => {
       this.authService.verifyToken(token).then((payload: any) => {
         if (!payload) {
           reject(new TokenVerifyException());
+          return;
         }
         // 获得用户信息 并注入 req 对象
         this.authService.repository3.findOne(payload.id).then(async result => {
           if (!result) {
-            reject(new TokenFindException());
+            reject(new ParamsException('当前用户不存在'));
+            return;
+          }
+          if (result.status === ENTITY_STATUS_ENUM.disable) {
+            reject(new ParamsException('用户已被禁用, 无法继续'));
+            return;
+          }
+          if (token !== result.token) {
+            reject(new TokenExpiredException());
             return;
           }
           // 取得当前路由所需权限

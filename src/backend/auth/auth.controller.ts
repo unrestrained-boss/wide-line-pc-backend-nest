@@ -33,13 +33,15 @@ export class AuthController {
     if (result.status === ENTITY_STATUS_ENUM.disable) {
       throw new ParamsException('用户已锁定, 无法登陆');
     }
-
+    const token = await this.createToken(result.id);
+    await this.authService.updatePeopleToken(result.id, token);
     return {
-      token: await this.createToken(result.id),
+      token,
     };
   }
 
-  private async createToken(id: string) {
+  private async createToken(id: string): Promise<string> {
+    // TODO: TOKEN 有效期设置和验证
     const secretKey = this.configService.getString('BACKEND_TOKEN_SECRET_KEY');
     return new Promise((resolve, reject) => {
       jwt.sign({ id }, secretKey, { algorithm: BACKEND_JWT_ALGORITHM }, (error, token) => {

@@ -4,7 +4,7 @@ import { CreateRoleDto, RoleEntity } from './role.entity';
 import { ParamsException } from '../../shared/all-exception.exception';
 import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
-import { PERMISSION_CODES } from '../../shared/constant';
+import { PERMISSION_TYPES } from '../../shared/constant';
 import { Permission } from '../auth/permission.decorator';
 import { AuthService } from '../auth/auth.service';
 
@@ -19,13 +19,13 @@ export class RoleController {
   ) {
   }
 
-  @Permission(PERMISSION_CODES.ROLE_LIST)
+  @Permission(PERMISSION_TYPES.ROLE_LIST.code)
   @Get('')
   async index() {
     return await this.service.repository.find();
   }
 
-  @Permission(PERMISSION_CODES.ROLE_INFO)
+  @Permission(PERMISSION_TYPES.ROLE_INFO.code)
   @Get(':id')
   async detail(@Param('id') id: string) {
     const record = await this.service.repository.findOne(id);
@@ -35,13 +35,13 @@ export class RoleController {
     return record;
   }
 
-  @Permission(PERMISSION_CODES.ROLE_CREATE)
+  @Permission(PERMISSION_TYPES.ROLE_CREATE.code)
   @Post('')
   async create(@Body() createDto: CreateRoleDto) {
     return await this.authService.createRoleWithPermissions(createDto);
   }
 
-  @Permission(PERMISSION_CODES.ROLE_UPDATE)
+  @Permission(PERMISSION_TYPES.ROLE_UPDATE.code)
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateDto: CreateRoleDto) {
     const record = await this.service.repository.findOne(id);
@@ -51,7 +51,7 @@ export class RoleController {
     return await this.authService.updateRoleWithPermissions(record, updateDto);
   }
 
-  @Permission(PERMISSION_CODES.ROLE_DELETE)
+  @Permission(PERMISSION_TYPES.ROLE_DELETE.code)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const record = await this.service.repository.findOne(id);

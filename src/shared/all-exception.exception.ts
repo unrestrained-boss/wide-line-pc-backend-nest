@@ -18,11 +18,6 @@ export class TokenExpiredException extends HttpException {
   }
 }
 
-export class TokenFindException extends HttpException {
-  constructor() {
-    super('Token 未找到, 请稍后再试', HttpStatus.OK);
-  }
-}
 export class TokenFindCasingException extends HttpException {
   constructor() {
     super('Token 查找异常, 请稍后再试', HttpStatus.OK);

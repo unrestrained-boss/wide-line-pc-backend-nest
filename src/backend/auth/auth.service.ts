@@ -26,6 +26,10 @@ export class AuthService {
     this.configService = configService;
   }
 
+  async updatePeopleToken(id: string, token: string) {
+    return await this.repository3.update(id, { token });
+  }
+
   async findPermissionCodesById(id: string) {
     return await this.repository3.query(`SELECT \`code\` FROM \`permission\` WHERE \`id\`
     IN (
@@ -59,6 +63,7 @@ export class AuthService {
       peopleEntity.avatar = this.configService.getString('BACKEND_DEFAULT_AVATAR');
     }
     peopleEntity.password = hash;
+    // TODO: try / catch
     // 插入用户表
     await this.repository3.manager.transaction(async entityManager => {
       await entityManager.save<PeopleEntity>(peopleEntity);
@@ -75,6 +80,7 @@ export class AuthService {
 
   async updatePeopleWithRoles(peopleEntity: PeopleEntity, updateDto: PeopleUpdateDto) {
     Object.assign(peopleEntity, updateDto);
+    // TODO: try / catch
     await this.repository3.manager.transaction(async entityManager => {
       await entityManager.save<PeopleEntity>(peopleEntity);
       await entityManager.query('DELETE FROM `merge_people_role` WHERE `people_id` = ?', [peopleEntity.id]);
@@ -89,6 +95,7 @@ export class AuthService {
   }
 
   async deletePeopleWithRoles(id: string) {
+    // TODO: try / catch
     await this.repository3.manager.transaction(async entityManager => {
       await entityManager.query('DELETE FROM `people` WHERE `id` = ?', [id]);
       await entityManager.query('DELETE FROM `merge_people_role` WHERE `people_id` = ?', [id]);
@@ -96,6 +103,7 @@ export class AuthService {
   }
 
   async createRoleWithPermissions(createDto: CreateRoleDto) {
+    // TODO: try / catch
     await this.repository3.manager.transaction(async entityManager => {
       const roleEntity = new RoleEntity();
       Object.assign(roleEntity, createDto);
@@ -112,6 +120,7 @@ export class AuthService {
 
   async updateRoleWithPermissions(roleEntity: RoleEntity, updateDto: CreateRoleDto) {
     Object.assign(roleEntity, updateDto);
+    // TODO: try / catch
     await this.repository3.manager.transaction(async entityManager => {
       await entityManager.save<RoleEntity>(roleEntity);
       await entityManager.query('DELETE FROM `merge_role_permission` WHERE `role_id` = ?', [roleEntity.id]);
@@ -126,6 +135,7 @@ export class AuthService {
   }
 
   async deleteRoleWithPermissions(id: string) {
+    // TODO: try / catch
     await this.repository3.manager.transaction(async entityManager => {
       await entityManager.query('DELETE FROM `role` WHERE `id` = ?', [id]);
       await entityManager.query('DELETE FROM `merge_people_role` WHERE `role_id` = ?', [id]);
