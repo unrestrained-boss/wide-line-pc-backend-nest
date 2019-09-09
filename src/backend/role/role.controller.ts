@@ -7,6 +7,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { PERMISSION_TYPES } from '../../shared/constant';
 import { Permission } from '../auth/permission.decorator';
 import { AuthService } from '../auth/auth.service';
+import { Pagination, PaginationType } from '../../shared/pagination.decorator';
 
 @ApiUseTags('角色管理')
 @ApiBearerAuth()
@@ -21,8 +22,12 @@ export class RoleController {
 
   @Permission(PERMISSION_TYPES.ROLE_LIST.code)
   @Get('')
-  async index() {
-    return await this.service.repository.find();
+  async index(@Pagination() page: PaginationType) {
+    const [result, total] = await this.service.repository.findAndCount(page);
+    return {
+      data: result,
+      total,
+    };
   }
 
   @Permission(PERMISSION_TYPES.ROLE_INFO.code)

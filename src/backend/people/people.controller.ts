@@ -1,6 +1,6 @@
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
 import { PeopleService } from './people.service';
-import { PeopleCreateDto, PeopleUpdateDto } from './people.entity';
+import { PeopleCreateDto, PeopleEntity, PeopleUpdateDto } from './people.entity';
 import { ParamsException } from '../../shared/all-exception.exception';
 import { ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { AuthGuard } from '../auth/auth.guard';
@@ -8,6 +8,7 @@ import { AuthUser, AutUserEntity } from '../auth/auth.decorator';
 import { Permission } from '../auth/permission.decorator';
 import { PEOPLE_ROOT_ENUM, PERMISSION_TYPES } from '../../shared/constant';
 import { AuthService } from '../auth/auth.service';
+import { Pagination, PaginationType } from '../../shared/pagination.decorator';
 
 @ApiUseTags('用户管理')
 @ApiBearerAuth()
@@ -24,8 +25,15 @@ export class PeopleController {
 
   @Permission(PERMISSION_TYPES.PEOPLE_LIST.code)
   @Get('')
-  async index(@AuthUser() user: AutUserEntity) {
-    return await this.service.repository.find();
+  async index(@Pagination() page: PaginationType) {
+    const [result, total] = await this.service.repository.findAndCount({
+      select: ['id', 'username', 'realName', 'avatar', 'phone', 'email', 'root', 'status', 'createdAt', 'updatedAt'],
+      ...page,
+    });
+    return {
+      data: result,
+      total,
+    };
   }
 
   @Permission(PERMISSION_TYPES.PEOPLE_INFO.code)
