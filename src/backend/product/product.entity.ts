@@ -1,4 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 import {
   IsEnum,
   IsUUID,
@@ -12,6 +23,9 @@ import {
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { ENTITY_STATUS_ENUM } from '../../shared/constant';
 import { ProductSkuEntity } from './product-sku.entity';
+import { PermissionEntity } from '../permission/permission.entity';
+import { BrandEntity } from '../brand/brand.entity';
+import { CategoryEntity } from '../category/category.entity';
 
 @ValidatorConstraint({ name: 'customText', async: false })
 class IsSKUS implements ValidatorConstraintInterface {
@@ -97,6 +111,17 @@ export class ProductEntity {
   createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @OneToMany(type => ProductSkuEntity, productSkuEntity => productSkuEntity.product)
+  skus: ProductSkuEntity[];
+
+  @ManyToOne(type => BrandEntity, brandEntity => brandEntity.products)
+  @JoinColumn({name: 'brand_id'})
+  brand: ProductEntity;
+
+  @ManyToOne(type => CategoryEntity, categoryEntity => categoryEntity.products)
+  @JoinColumn({name: 'category_id'})
+  category: ProductEntity;
 }
 
 export class ProductCreateDto extends ProductEntity {

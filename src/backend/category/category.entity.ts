@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { IsArray, IsEnum, IsUUID, IsNotEmpty, IsOptional, MaxLength, Min, IsNumber } from 'class-validator';
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { ENTITY_STATUS_ENUM } from '../../shared/constant';
+import { ProductEntity } from '../product/product.entity';
 
 @Entity({ name: 'category' })
 export class CategoryEntity {
@@ -41,4 +42,7 @@ export class CategoryEntity {
   createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @OneToMany(type => ProductEntity, productEntity => productEntity.category)
+  products: ProductEntity[];
 }

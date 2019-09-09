@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { IsEnum, IsNotEmpty, MaxLength, Min, IsNumber, IsDecimal } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { ENTITY_STATUS_ENUM } from '../../shared/constant';
+import { ProductEntity } from './product.entity';
 
 @Entity({ name: 'product_sku' })
 export class ProductSkuEntity {
@@ -26,7 +27,7 @@ export class ProductSkuEntity {
   @Column()
   sock: number;
 
-  @Column({name: 'product_id'})
+  @Column({ name: 'product_id' })
   productId: string;
 
   @ApiModelProperty({ enum: [ENTITY_STATUS_ENUM.disable, ENTITY_STATUS_ENUM.enable] })
@@ -38,4 +39,8 @@ export class ProductSkuEntity {
   createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @ManyToOne(type => ProductEntity, productEntity => productEntity.skus)
+  @JoinColumn({name: 'product_id'})
+  product: ProductEntity;
 }

@@ -28,6 +28,17 @@ export class ProductController {
       total,
     };
   }
+  @Permission(PERMISSION_TYPES.PRODUCT_INFO.code)
+  @Get(':id')
+  async detail(@Param('id') id: string) {
+    const record = await this.service.repository.findOne(id, {
+      relations: ['skus', 'brand', 'category'],
+    });
+    if (!record) {
+      throw new ParamsException('产品不存在');
+    }
+    return record;
+  }
 
   @Permission(PERMISSION_TYPES.PRODUCT_CREATE.code)
   @Post('')
@@ -45,6 +56,7 @@ export class ProductController {
     productEntity.categoryId = createDto.categoryId;
     productEntity.status = createDto.status;
     return await this.service.createProductWithSKU(productEntity, createDto.skus);
+    // TODO: 创建和更新成功后 调用 detail 方法
   }
 
   @Permission(PERMISSION_TYPES.PRODUCT_UPDATE.code)

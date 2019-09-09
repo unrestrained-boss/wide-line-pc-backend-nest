@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, AfterLoad } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, AfterLoad, ManyToMany, JoinTable } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { IsArray, IsEmail, IsEnum, IsMobilePhone, IsNotEmpty, IsOptional, MaxLength, MinLength } from 'class-validator';
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { ENTITY_STATUS_ENUM, PEOPLE_ROOT_ENUM } from '../../shared/constant';
 import { ConfigService } from '../../config/config.service';
+import { RoleEntity } from '../role/role.entity';
 
 // 此处无法注入 configService
 export class PeopleEntityWithoutPassword {
@@ -69,6 +70,10 @@ export class PeopleEntity extends PeopleEntityWithoutPassword {
 
   @Column({ enum: PEOPLE_ROOT_ENUM })
   root: PEOPLE_ROOT_ENUM;
+
+  @ManyToMany(type => RoleEntity)
+  @JoinTable({ name: 'merge_people_role', joinColumn: { name: 'role_id' }, inverseJoinColumn: { name: 'people_id' } })
+  roles: PeopleEntity[];
 }
 
 export class PeopleUpdateDto extends PeopleEntityWithoutPassword {

@@ -115,7 +115,7 @@ export class AuthService {
       await entityManager.save<RoleEntity>(roleEntity);
       await entityManager.save<MergeRolePermissionEntity[]>(createDto.permissions.map(permission => {
         const p = new MergeRolePermissionEntity();
-        p.permissionId = permission;
+        // p.permissionId = permission;
         p.roleId = roleEntity.id;
         return p;
       }));
@@ -131,7 +131,7 @@ export class AuthService {
       await entityManager.query('DELETE FROM `merge_role_permission` WHERE `role_id` = ?', [roleEntity.id]);
       await entityManager.save<MergeRolePermissionEntity[]>(updateDto.permissions.map(permission => {
         const p = new MergeRolePermissionEntity();
-        p.permissionId = permission;
+        // p.permissionId = permission;
         p.roleId = roleEntity.id;
         return p;
       }));

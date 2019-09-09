@@ -8,7 +8,7 @@ export class AllExceptionFilter extends BaseExceptionFilter {
     if (typeof message !== 'string') {
       message = exception.message.message || exception.message.error;
     }
-    this._send(host, message, 200);
+    this._send(host, message, 400);
   }
   _send(host: ArgumentsHost, message: string, statusCode: number) {
     const ctx = host.switchToHttp();

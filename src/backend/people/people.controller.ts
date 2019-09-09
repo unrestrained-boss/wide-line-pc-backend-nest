@@ -38,7 +38,9 @@ export class PeopleController {
   @Permission(PERMISSION_TYPES.PEOPLE_INFO.code)
   @Get(':id')
   async detail(@Param('id') id: string) {
-    const record = await this.service.repository.findOne(id);
+    const record = await this.service.repository.findOne(id, {
+      relations: ['roles'],
+    });
     if (!record) {
       throw new ParamsException('用户不存在');
     }

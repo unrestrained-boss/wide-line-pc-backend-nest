@@ -33,7 +33,9 @@ export class RoleController {
   @Permission(PERMISSION_TYPES.ROLE_INFO.code)
   @Get(':id')
   async detail(@Param('id') id: string) {
-    const record = await this.service.repository.findOne(id);
+    const record = await this.service.repository.findOne(id, {
+      relations: ['permissions'],
+    });
     if (!record) {
       throw new ParamsException('角色不存在');
     }

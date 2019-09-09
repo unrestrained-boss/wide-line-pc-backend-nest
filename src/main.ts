@@ -11,6 +11,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.use('/static', express.static(join(__dirname, '../', 'public')));
+  app.enableCors();
   app.useGlobalFilters(new AllExceptionFilter(httpAdapter));
   app.useGlobalPipes(new ValidationPipe({
     exceptionFactory: (errors: ValidationError[]) => {

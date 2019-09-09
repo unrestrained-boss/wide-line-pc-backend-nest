@@ -1,7 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToMany, JoinTable } from 'typeorm';
 import { IsArray, IsEnum, IsNotEmpty, MaxLength } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { ENTITY_STATUS_ENUM } from '../../shared/constant';
+import { PermissionEntity } from '../permission/permission.entity';
+import { PeopleEntity } from '../people/people.entity';
 
 @Entity({ name: 'role' })
 export class RoleEntity {
@@ -29,10 +31,18 @@ export class RoleEntity {
   createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
+
+  @ManyToMany(type => PermissionEntity)
+  @JoinTable({ name: 'merge_role_permission', joinColumn: { name: 'role_id' }, inverseJoinColumn: { name: 'permission_id' } })
+  permissions: PermissionEntity[];
+
+  @ManyToMany(type => PeopleEntity)
+  @JoinTable({ name: 'merge_people_role', joinColumn: { name: 'role_id' }, inverseJoinColumn: { name: 'people_id' } })
+  peoples: PeopleEntity[];
 }
 
 export class CreateRoleDto extends RoleEntity {
   @ApiModelProperty()
   @IsArray({ message: '权限必须填写' })
-  permissions: string[];
+  permissions: PermissionEntity[];
 }
