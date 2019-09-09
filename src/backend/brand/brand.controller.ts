@@ -34,6 +34,16 @@ export class BrandController {
     return transformLabel(result, null, defaultTransformLabelOption);
   }
 
+  @Permission(PERMISSION_TYPES.BRAND_INFO.code)
+  @Get(':id')
+  async detail(@Param('id') id: string) {
+    const record = await this.service.repository.findOne(id);
+    if (!record) {
+      throw new ParamsException('品牌不存在');
+    }
+    return record;
+  }
+
   @Permission(PERMISSION_TYPES.BRAND_CREATE.code)
   @Post('')
   async create(@Body() brandEntity: BrandEntity) {
@@ -67,6 +77,7 @@ export class BrandController {
     return null;
   }
 }
+
 //
 // function dd(items: any[], id: string | null) {
 //   const result: any[] = [];

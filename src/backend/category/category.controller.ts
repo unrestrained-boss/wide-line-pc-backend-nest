@@ -35,6 +35,16 @@ export class CategoryController {
     return transformLabel(result, null, defaultTransformLabelOption);
   }
 
+  @Permission(PERMISSION_TYPES.CATEGORY_INFO.code)
+  @Get(':id')
+  async detail(@Param('id') id: string) {
+    const record = await this.service.repository.findOne(id);
+    if (!record) {
+      throw new ParamsException('分类不存在');
+    }
+    return record;
+  }
+
   @Permission(PERMISSION_TYPES.CATEGORY_CREATE.code)
   @Post('')
   async create(@Body() brandEntity: CategoryEntity) {
