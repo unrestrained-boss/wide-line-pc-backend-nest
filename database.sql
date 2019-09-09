@@ -88,3 +88,33 @@ CREATE TABLE `category`
     `updated_at` DATETIME           DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB COMMENT ='分类表';
+
+CREATE TABLE `product`
+(
+    `id`         VARCHAR(36)  UNIQUE,
+    `title`      VARCHAR(64)  NOT NULL COMMENT '产品名称',
+    `spec`       VARCHAR(32)  NOT NULL COMMENT '规范:如尺码, 内存',
+    `lowest_price`     DECIMAL(20, 2)  NOT NULL COMMENT '最低价格',
+    `thumbs`     TEXT       NOT NULL COMMENT '轮播图',
+    `details`    TEXT       NOT NULL COMMENT '详情',
+    `sales`      INT        DEFAULT 0 COMMENT '销量',
+    `brand_id`      VARCHAR(36)       NOT NULL COMMENT '品牌 ID',
+    `category_id`   VARCHAR(36)       NOT NULL COMMENT '类别 ID',
+    `status`     TINYINT  DEFAULT 1 COMMENT '状态: 1 可用 0 禁用',
+    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='产品表';
+
+CREATE TABLE `product_sku`
+(
+    `id`         VARCHAR(36)  UNIQUE,
+    `product_id` VARCHAR(36)  NOT NULL COMMENT '产品 ID',
+    `price`      DECIMAL(20, 2)  NOT NULL COMMENT '价格',
+    `spec`       VARCHAR(32)  NOT NULL COMMENT '规范值:xl xxl 8g 16g',
+    `sock`       BIGINT       NOT NULL COMMENT '库存',
+    `status`     TINYINT  DEFAULT 1 COMMENT '状态: 1 可用 0 禁用',
+    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='产品SKU表';

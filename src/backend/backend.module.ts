@@ -5,8 +5,9 @@ import { PermissionModule } from './permission/permission.module';
 import { UploadModule } from './upload/upload.module';
 import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './category/category.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
-  imports: [PeopleModule, RoleModule, PermissionModule, UploadModule, BrandModule, CategoryModule],
+  imports: [PeopleModule, RoleModule, PermissionModule, UploadModule, BrandModule, CategoryModule, ProductModule],
 })
 export class BackendModule {}
