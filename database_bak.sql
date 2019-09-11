@@ -61,37 +61,37 @@ CREATE TABLE `merge_role_permission`
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB COMMENT ='权限角色权限表';
---
---CREATE TABLE `user`
---(
---    `id`         VARCHAR(36) UNIQUE,
---    `username`   VARCHAR(32) UNIQUE NOT NULL COMMENT '用户名',
---    `password`   VARCHAR(64)        NOT NULL COMMENT '姓名',
---    `nickname`   VARCHAR(64)        NOT NULL COMMENT '昵称',
---    `avatar`     VARCHAR(128)       NOT NULL COMMENT '头像',
---    `phone`      VARCHAR(32)        NOT NULL COMMENT '手机号码',
---    `email`      VARCHAR(64)        NOT NULL COMMENT '电子邮箱',
---    `token`      VARCHAR(255)        DEFAULT NULL COMMENT 'TOKEN',
---    `status`     TINYINT  DEFAULT 1 COMMENT '状态: 1 可用 0 禁用',
---    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
---    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
---    PRIMARY KEY (`id`)
---) ENGINE = InnoDB COMMENT ='用户表';
---
---CREATE TABLE `user_address`
---(
---    `id`         VARCHAR(36) UNIQUE,
---    `contact`    VARCHAR(32)  NOT NULL COMMENT '联系人',
---    `phone`      VARCHAR(32)        NOT NULL COMMENT '手机号码',
---    `province`   VARCHAR(32)        NOT NULL COMMENT '省份',
---    `city`       VARCHAR(32)        NOT NULL COMMENT '城市',
---    `area`       VARCHAR(32)        NOT NULL COMMENT '区域',
---    `address`    VARCHAR(255)       NOT NULL COMMENT '详细地址',
---    `is_default` TINYINT  DEFAULT 0 COMMENT '是否是默认地址: 1 是 0 否',
---    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
---    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
---    PRIMARY KEY (`id`)
---) ENGINE = InnoDB COMMENT ='用户地址表';
+
+CREATE TABLE `user`
+(
+    `id`         VARCHAR(36) UNIQUE,
+    `username`   VARCHAR(32) UNIQUE NOT NULL COMMENT '用户名',
+    `password`   VARCHAR(64)        NOT NULL COMMENT '姓名',
+    `nickname`   VARCHAR(64)        NOT NULL COMMENT '昵称',
+    `avatar`     VARCHAR(128)       NOT NULL COMMENT '头像',
+    `phone`      VARCHAR(32)        NOT NULL COMMENT '手机号码',
+    `email`      VARCHAR(64)        NOT NULL COMMENT '电子邮箱',
+    `token`      VARCHAR(255)        DEFAULT NULL COMMENT 'TOKEN',
+    `status`     TINYINT  DEFAULT 1 COMMENT '状态: 1 可用 0 禁用',
+    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='用户表';
+
+CREATE TABLE `user_address`
+(
+    `id`         VARCHAR(36) UNIQUE,
+    `contact`    VARCHAR(32)  NOT NULL COMMENT '联系人',
+    `phone`      VARCHAR(32)        NOT NULL COMMENT '手机号码',
+    `province`   VARCHAR(32)        NOT NULL COMMENT '省份',
+    `city`       VARCHAR(32)        NOT NULL COMMENT '城市',
+    `area`       VARCHAR(32)        NOT NULL COMMENT '区域',
+    `address`    VARCHAR(255)       NOT NULL COMMENT '详细地址',
+    `is_default` TINYINT  DEFAULT 0 COMMENT '是否是默认地址: 1 是 0 否',
+    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='用户地址表';
 
 CREATE TABLE `brand`
 (

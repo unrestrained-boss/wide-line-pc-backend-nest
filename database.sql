@@ -119,3 +119,104 @@ CREATE TABLE `product_sku`
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB COMMENT ='产品SKU表';
+
+
+CREATE TABLE `user`
+(
+    `id`         VARCHAR(36) UNIQUE,
+    `username`   VARCHAR(32) UNIQUE NOT NULL COMMENT '用户名',
+    `password`   VARCHAR(64)        NOT NULL COMMENT '姓名',
+    `nickname`   VARCHAR(64)        NOT NULL COMMENT '昵称',
+    `avatar`     VARCHAR(128)       NOT NULL COMMENT '头像',
+    `phone`      VARCHAR(32)        NOT NULL COMMENT '手机号码',
+    `email`      VARCHAR(64)        NOT NULL COMMENT '电子邮箱',
+    `token`      VARCHAR(255)        DEFAULT NULL COMMENT 'TOKEN',
+    `status`     TINYINT  DEFAULT 1 COMMENT '状态: 1 可用 0 禁用',
+    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='用户表';
+
+CREATE TABLE `user_address`
+(
+    `id`         VARCHAR(36) UNIQUE,
+    `contact`    VARCHAR(32)  NOT NULL COMMENT '联系人',
+    `phone`      VARCHAR(32)        NOT NULL COMMENT '手机号码',
+    `province`   VARCHAR(32)        NOT NULL COMMENT '省份',
+    `city`       VARCHAR(32)        NOT NULL COMMENT '城市',
+    `area`       VARCHAR(32)        NOT NULL COMMENT '区域',
+    `address`    VARCHAR(255)       NOT NULL COMMENT '详细地址',
+    `is_default` TINYINT  DEFAULT 0 COMMENT '是否是默认地址: 1 是 0 否',
+    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='用户地址表';
+
+CREATE TABLE `order`
+(
+    `id`           VARCHAR(36)  UNIQUE,
+    `seller_id`    VARCHAR(36) NOT NULL COMMENT '卖家 id',
+    `buyer_id`     VARCHAR(36) NOT NULL COMMENT '买家 id',
+
+    # 产品信息
+    `product_id`            VARCHAR(36) NOT NULL COMMENT '产品 id',
+    `product_title`         VARCHAR(36) NOT NULL COMMENT '产品 标题',
+    `product_spec`          VARCHAR(36) NOT NULL COMMENT '产品 规格',
+    `product_sku_id`        VARCHAR(36) NOT NULL COMMENT '产品sku id',
+    `sku_spec`              VARCHAR(36) NOT NULL COMMENT '产品sku 规格值',
+    `sku_price`             VARCHAR(36) NOT NULL COMMENT '产品sku 单价',
+    `sku_number`            VARCHAR(36) NOT NULL COMMENT '产品sku 数量',
+
+    # 金额与支付
+    `total_amount`          DECIMAL(20, 2) NOT NULL COMMENT '订单总金额',
+    `actually_amount`       DECIMAL(20, 2) DEFAULT NULL COMMENT '订单实付金额',
+    `freight_amount`        DECIMAL(20, 2) NOT NULL COMMENT '订单运费金额',
+    `payment_type`      TINYINT   DEFAULT NULL COMMENT '支付方式: 1 微信 2 支付宝',
+
+    # 时间相关
+    `order_at`      DATETIME     DEFAULT CURRENT_TIMESTAMP COMMENT '下单时间',
+    `payment_at`    DATETIME     DEFAULT NULL COMMENT '支付时间',
+    `delivery_at`   DATETIME     DEFAULT NULL COMMENT '发货时间',
+    `received_at`   DATETIME     DEFAULT NULL COMMENT '确认收货时间',
+    `finished_at`   DATETIME     DEFAULT NULL COMMENT '完成时间',
+    `canceled_at`   DATETIME     DEFAULT NULL COMMENT '取消时间',
+    `refunded_at`   DATETIME     DEFAULT NULL COMMENT '退款时间',
+
+    # 物流公司
+    `seller_express_name` VARCHAR(64) DEFAULT NULL COMMENT '卖家发货快递名称',
+    `seller_tracking_number` VARCHAR(128) DEFAULT NULL COMMENT '卖家发货快递单号',
+    `buyer_express_name` VARCHAR(64) DEFAULT NULL COMMENT '买家发货快递名称',
+    `buyer_tracking_number` VARCHAR(128) DEFAULT NULL COMMENT '买家发货快递单号',
+
+    # 联系人
+    `contact`    VARCHAR(32)  NOT NULL COMMENT '收货人姓名',
+    `phone`      VARCHAR(32)        NOT NULL COMMENT '收货人电话',
+    `address`    VARCHAR(255)        NOT NULL COMMENT '收货人详细地址',
+    `remark`     VARCHAR(255)        NOT NULL COMMENT '收货人备注信息',
+
+    # 基础
+    `dispute_status`     TINYINT  DEFAULT NULL COMMENT '争议时的状态, 用于恢复到正常流程',
+    `status`     TINYINT  DEFAULT 1 COMMENT '状态: 参考 model',
+    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='订单表';
+
+CREATE TABLE `dispute`
+(
+    `id`         VARCHAR(36)  UNIQUE,
+    `order_id`   VARCHAR(36) NOT NULL COMMENT '订单 ID',
+    `buyer_reason`     VARCHAR(255) NOT NULL COMMENT '买家争议原因',
+    `buyer_evidence`   TEXT NOT NULL COMMENT '买家争议材料',
+    `seller_reason`     VARCHAR(255) NOT NULL COMMENT '卖家争议拒绝原因',
+    `seller_evidence`   TEXT NOT NULL COMMENT '卖家争议材料',
+    `received`    TINYINT NOT NULL COMMENT '是否已确认收货 1: 是 0: 否',
+    `type`       TINYINT  DEFAULT NULL COMMENT '争议类型 1: 取消 2: 退货退款',
+    `status`     TINYINT  DEFAULT 1 COMMENT '状态: 1: 待审核 2: 申请通过 3: 申请不通过',
+    `review_at`  DATETIME  DEFAULT NULL COMMENT '申请时间',
+    `approval_at`  DATETIME  DEFAULT NULL COMMENT '申请通过时间',
+    `failed_at`  DATETIME  DEFAULT NULL COMMENT '申请不通过时间',
+    `created_at` DATETIME           DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='争议表';
